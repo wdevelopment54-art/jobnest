@@ -8,10 +8,14 @@ class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
 
     # Database
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL",
-        "postgresql://postgres:postgres@localhost:5432/job_portal",
+    # Default to SQLite (no server required). Override with DATABASE_URL
+    # (e.g. a PostgreSQL URL) for production. The path is resolved relative
+    # to the project root so it works under any working directory (incl.
+    # PythonAnywhere's WSGI server).
+    _default_db = "sqlite:///" + os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "instance", "job_portal.db"
     )
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", _default_db)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,
