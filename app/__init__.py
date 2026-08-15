@@ -64,6 +64,9 @@ def create_app(config_name="default"):
             )
         except Exception:
             categories = []
+        # Start from config defaults, then override with any admin-edited
+        # site settings stored in the database (so the admin panel controls
+        # the whole site's branding/contact/social without code changes).
         site = {k: app.config.get(k) for k in [
             "SITE_NAME", "SITE_EMAIL", "SITE_PHONE_DISPLAY", "SITE_PHONE_HREF",
             "SITE_WHATSAPP_NUMBER", "SITE_WHATSAPP_HREF", "SITE_WHATSAPP_MESSAGE",
@@ -71,6 +74,15 @@ def create_app(config_name="default"):
             "SITE_MAP_URL", "SITE_FACEBOOK_URL", "SITE_TWITTER_URL",
             "SITE_LINKEDIN_URL", "SITE_INSTAGRAM_URL",
         ]}
+        try:
+            from app.models import SiteSetting
+            for k, v in SiteSetting.get_all().items():
+                if v not in (None, ""):
+                    site[k] = v
+        except Exception:
+            # Database may not be available (e.g. before first migration);
+            # fall back to config values above.
+            pass
         return {
             "current_year": os.environ.get("CURRENT_YEAR", "2026"),
             "nav_categories": categories[:8],

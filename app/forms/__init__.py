@@ -6,11 +6,11 @@ from app.forms.profile_forms import JobSeekerProfileForm, EmployerProfileForm
 from app.forms.job_forms import (
     JobForm, ApplicationForm, ContactForm, CategoryForm, ApplicationStatusForm,
 )
-from app.forms.admin_forms import UserForm, AdminJobForm
+from app.forms.admin_forms import UserForm, AdminJobForm, SiteSettingsForm
 
 __all__ = [
     "RegistrationForm", "LoginForm", "RequestResetForm", "ResetPasswordForm",
     "JobSeekerProfileForm", "EmployerProfileForm",
     "JobForm", "ApplicationForm", "ContactForm", "CategoryForm", "ApplicationStatusForm",
-    "UserForm", "AdminJobForm",
+    "UserForm", "AdminJobForm", "SiteSettingsForm",
 ]

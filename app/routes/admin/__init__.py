@@ -467,3 +467,40 @@ def notifications():
     notes = current_user.notifications
     return render_template("admin/notifications.html", notifications=notes,
                            title="Notifications")
+
+
+# ---------------- Site Settings ----------------
+@bp.route("/settings", methods=["GET", "POST"])
+@login_required
+@admin_required
+def settings():
+    """Admin-editable site-wide settings (branding, contact, social)."""
+    from app.forms import SiteSettingsForm
+    from app.models import SiteSetting
+
+    form = SiteSettingsForm()
+    if form.validate_on_submit():
+        for field in form:
+            if field.name in ("csrf_token", "submit"):
+                continue
+            SiteSetting.set_value(
+                key=field.name,
+                value=field.data or "",
+                label=field.label.text,
+                group="site",
+            )
+        db.session.commit()
+        flash("Site settings saved successfully.", "success")
+        return redirect(url_for("admin.settings"))
+
+    # Pre-populate the form from stored settings (fall back to config).
+    if not form.is_submitted():
+        stored = SiteSetting.get_all()
+        for field in form:
+            if field.name in ("csrf_token", "submit"):
+                continue
+            if field.name in stored and stored[field.name] is not None:
+                field.data = stored[field.name]
+            else:
+                field.data = current_app.config.get(field.name, "")
+    return render_template("admin/settings.html", form=form, title="Site Settings")

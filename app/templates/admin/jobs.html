@@ -1,7 +1,9 @@
-{% extends "base.html" %}
+{% extends "admin/layout.html" %}
 {% from "partials/helpers.html" import status_badge %}
 
-{% block content %}
+{% set active = 'jobs' %}
+
+{% block admin_content %}
 <section class="dashboard admin-dashboard">
     <div class="container">
         <div class="dashboard-head">

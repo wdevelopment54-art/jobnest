@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="admin-shell">
+    <aside class="admin-sidebar">
+        <div class="admin-sidebar-brand">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+            <span>Admin Panel</span>
+        </div>
+        <nav class="admin-nav">
+            <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-link {% if active == 'dashboard' %}active{% endif %}">
+                <i class="fa-solid fa-gauge-high"></i> Dashboard
+            </a>
+            <a href="{{ url_for('admin.users') }}" class="admin-nav-link {% if active == 'users' %}active{% endif %}">
+                <i class="fa-solid fa-users"></i> Users
+            </a>
+            <a href="{{ url_for('admin.employers') }}" class="admin-nav-link {% if active == 'employers' %}active{% endif %}">
+                <i class="fa-solid fa-building"></i> Employers
+            </a>
+            <a href="{{ url_for('admin.jobs') }}" class="admin-nav-link {% if active == 'jobs' %}active{% endif %}">
+                <i class="fa-solid fa-briefcase"></i> Jobs
+            </a>
+            <a href="{{ url_for('admin.categories') }}" class="admin-nav-link {% if active == 'categories' %}active{% endif %}">
+                <i class="fa-solid fa-tags"></i> Categories
+            </a>
+            <a href="{{ url_for('admin.applications') }}" class="admin-nav-link {% if active == 'applications' %}active{% endif %}">
+                <i class="fa-solid fa-list-check"></i> Applications
+            </a>
+            <a href="{{ url_for('admin.messages') }}" class="admin-nav-link {% if active == 'messages' %}active{% endif %}">
+                <i class="fa-solid fa-envelope"></i> Messages
+            </a>
+            <a href="{{ url_for('admin.notifications') }}" class="admin-nav-link {% if active == 'notifications' %}active{% endif %}">
+                <i class="fa-solid fa-bell"></i> Notifications
+            </a>
+            <a href="{{ url_for('admin.settings') }}" class="admin-nav-link {% if active == 'settings' %}active{% endif %}">
+                <i class="fa-solid fa-gear"></i> Site Settings
+            </a>
+        </nav>
+        <div class="admin-sidebar-foot">
+            <a href="{{ url_for('public.index') }}" class="admin-nav-link" target="_blank" rel="noopener">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> View Site
+            </a>
+        </div>
+    </aside>
+
+    <div class="admin-main">
+        {% block admin_content %}{% endblock %}
+    </div>
+</section>
+{% endblock %}

@@ -16,6 +16,7 @@ from app.models.application import (
     APP_SELECTED, APP_REJECTED, APPLICATION_STATUSES,
 )
 from app.models.contact import ContactMessage
+from app.models.site_setting import SiteSetting
 
 __all__ = [
     "User", "ROLE_ADMIN", "ROLE_EMPLOYER", "ROLE_JOBSEEKER",
@@ -27,5 +28,5 @@ __all__ = [
     "Application", "SavedJob", "Notification",
     "APP_APPLIED", "APP_REVIEW", "APP_SHORTLISTED", "APP_INTERVIEW",
     "APP_SELECTED", "APP_REJECTED", "APPLICATION_STATUSES",
-    "ContactMessage",
+    "ContactMessage", "SiteSetting",
 ]

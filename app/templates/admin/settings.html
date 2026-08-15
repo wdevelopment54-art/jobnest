@@ -1,0 +1,60 @@
+{% extends "admin/layout.html" %}
+
+{% set active = 'settings' %}
+
+{% macro field(f) %}
+<div class="form-field">
+    {{ f.label }}
+    {{ f(class="input" + (" is-invalid" if f.errors else "")) }}
+    {% for e in f.errors %}<span class="error">{{ e }}</span>{% endfor %}
+</div>
+{% endmacro %}
+
+{% block admin_content %}
+<section class="dashboard admin-dashboard">
+    <div class="container">
+        <div class="dashboard-head">
+            <div>
+                <h1>Site Settings</h1>
+                <p>Control the website's branding, contact details and social links</p>
+            </div>
+        </div>
+
+        <form method="post" class="form-grid" novalidate>
+            {{ form.hidden_tag() }}
+
+            <div class="panel">
+                <div class="panel-head"><h3>General & Branding</h3></div>
+                {{ field(form.SITE_NAME) }}
+                {{ field(form.SITE_EMAIL) }}
+            </div>
+
+            <div class="panel">
+                <div class="panel-head"><h3>Contact Details</h3></div>
+                {{ field(form.SITE_PHONE_DISPLAY) }}
+                {{ field(form.SITE_PHONE_HREF) }}
+                {{ field(form.SITE_WHATSAPP_NUMBER) }}
+                {{ field(form.SITE_WHATSAPP_HREF) }}
+                {{ field(form.SITE_WHATSAPP_MESSAGE) }}
+                {{ field(form.SITE_ADDRESS) }}
+                {{ field(form.SITE_CITY) }}
+                {{ field(form.SITE_STATE) }}
+                {{ field(form.SITE_COUNTRY) }}
+                {{ field(form.SITE_MAP_URL) }}
+            </div>
+
+            <div class="panel">
+                <div class="panel-head"><h3>Social Media</h3></div>
+                {{ field(form.SITE_FACEBOOK_URL) }}
+                {{ field(form.SITE_TWITTER_URL) }}
+                {{ field(form.SITE_LINKEDIN_URL) }}
+                {{ field(form.SITE_INSTAGRAM_URL) }}
+            </div>
+
+            <div class="form-actions">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

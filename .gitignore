@@ -7,11 +7,18 @@ venv/
 env/
 
 # Environment
-.env
+# NOTE: .env is tracked here ONLY because this project is deployed via
+# `git pull` on PythonAnywhere and the server needs it. If your repo is
+# public, replace secrets (SECRET_KEY, MAIL_PASSWORD) with safe values
+# before pushing, or upload .env manually on the server instead.
+# (intentionally NOT ignored so it deploys)
 
 # Flask
-instance/
+# The instance/ folder holds the SQLite database. It is deployed via git so
+# the server has a working database. Only Python caches inside it are ignored.
+instance/__pycache__/
 *.sqlite3
+!instance/job_portal.db
 
 # Uploads (keep folder, ignore contents)
 app/static/uploads/*
@@ -19,6 +26,7 @@ app/static/uploads/*
 
 # Migrations data
 *.db
+!instance/job_portal.db
 
 # IDE
 .vscode/

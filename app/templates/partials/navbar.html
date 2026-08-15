@@ -35,6 +35,7 @@
                 {% else %}
                     <a href="{{ url_for('auth.login') }}" class="btn btn-ghost">Login</a>
                     <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Sign Up</a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-admin-login" title="Admin Login"><i class="fa-solid fa-lock"></i> Admin</a>
                 {% endif %}
                 <a href="{{ site.SITE_WHATSAPP_HREF }}?text={{ site.SITE_WHATSAPP_MESSAGE|urlencode }}" target="_blank" rel="noopener" class="btn btn-whatsapp" title="Chat on WhatsApp">
                     <i class="fa-brands fa-whatsapp"></i> WhatsApp

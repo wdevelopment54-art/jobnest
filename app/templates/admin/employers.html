@@ -1,7 +1,9 @@
-{% extends "base.html" %}
+{% extends "admin/layout.html" %}
 {% from "partials/helpers.html" import upload_url, status_badge %}
 
-{% block content %}
+{% set active = 'employers' %}
+
+{% block admin_content %}
 <section class="dashboard admin-dashboard">
     <div class="container">
         <div class="dashboard-head">

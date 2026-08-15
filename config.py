@@ -2,6 +2,34 @@ import os
 from datetime import timedelta
 
 
+# Project root directory (this file lives at the project root).
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+
+def _resolve_db_url():
+    """Resolve the database URL to an absolute path.
+
+    SQLite URLs supplied via DATABASE_URL are often relative (e.g.
+    ``sqlite:///job_portal.db``). On a hosting platform the WSGI worker
+    does NOT run from the project directory (e.g. PythonAnywhere runs from
+    ``/var/www``), so a relative path resolves to a non-writable location
+    and every request fails with "unable to open database file". Anchoring
+    relative SQLite paths to the project root makes the app robust to the
+    working directory it is launched from.
+    """
+    url = os.environ.get("DATABASE_URL")
+    if not url:
+        # Default: SQLite inside the project's instance/ folder.
+        return "sqlite:///" + os.path.join(PROJECT_ROOT, "instance", "job_portal.db")
+
+    # Only normalize relative SQLite paths (3 slashes => relative file path).
+    if url.startswith("sqlite:///") and not url.startswith("sqlite:////"):
+        rel = url[len("sqlite:///"):]
+        if not os.path.isabs(rel):
+            url = "sqlite:///" + os.path.join(PROJECT_ROOT, rel)
+    return url
+
+
 class Config:
     """Base configuration loaded from environment variables."""
 
@@ -9,13 +37,10 @@ class Config:
 
     # Database
     # Default to SQLite (no server required). Override with DATABASE_URL
-    # (e.g. a PostgreSQL URL) for production. The path is resolved relative
-    # to the project root so it works under any working directory (incl.
-    # PythonAnywhere's WSGI server).
-    _default_db = "sqlite:///" + os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "instance", "job_portal.db"
-    )
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", _default_db)
+    # (e.g. a PostgreSQL URL) for production. Relative SQLite paths are
+    # resolved against the project root so the app works under any working
+    # directory (incl. PythonAnywhere's WSGI server).
+    SQLALCHEMY_DATABASE_URI = _resolve_db_url()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,
