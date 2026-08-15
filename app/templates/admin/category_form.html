@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="dashboard admin-dashboard">
+    <div class="container narrow">
+        <div class="dashboard-head">
+            <div>
+                <h1>{{ title }}</h1>
+                <p>{% if cat %}Editing "{{ cat.name }}"{% else %}Create a new job category{% endif %}</p>
+            </div>
+            <a href="{{ url_for('admin.categories') }}" class="btn btn-outline">Back to Categories</a>
+        </div>
+
+        <div class="panel">
+            <form method="post" class="form-grid" novalidate>
+                {{ form.hidden_tag() }}
+                <div class="form-field">
+                    {{ form.name.label }}
+                    {{ form.name(class="input" + (" is-invalid" if form.name.errors else "")) }}
+                    {% for e in form.name.errors %}<span class="error">{{ e }}</span>{% endfor %}
+                </div>
+                <div class="form-field">
+                    {{ form.description.label }}
+                    {{ form.description(class="input" + (" is-invalid" if form.description.errors else ""), rows=4) }}
+                    {% for e in form.description.errors %}<span class="error">{{ e }}</span>{% endfor %}
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save</button>
+                    <a href="{{ url_for('admin.categories') }}" class="btn btn-ghost">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

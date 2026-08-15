@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="error-page">
+    <div class="container">
+        <div class="error-box">
+            <div class="error-code">{{ code or 500 }}</div>
+            <h1>{{ title or 'Something went wrong' }}</h1>
+            <p>{{ message or 'An unexpected error occurred. Please try again later.' }}</p>
+            <div class="error-actions">
+                <a href="{{ url_for('public.index') }}" class="btn btn-primary"><i class="fa-solid fa-house"></i> Go Home</a>
+                <a href="{{ url_for('public.jobs') }}" class="btn btn-outline">Browse Jobs</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% from "partials/helpers.html" import status_badge %}
+
+{% block content %}
+<section class="dashboard admin-dashboard">
+    <div class="container">
+        <div class="dashboard-head">
+            <div>
+                <h1>Users</h1>
+                <p>Manage all registered accounts</p>
+            </div>
+            <a href="{{ url_for('admin.new_user') }}" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Add User</a>
+        </div>
+
+        <form method="get" class="filter-bar">
+            <div class="filter-field">
+                <label>Role</label>
+                <select name="role" onchange="this.form.submit()">
+                    <option value="">All Roles</option>
+                    <option value="jobseeker" {% if current_role == 'jobseeker' %}selected{% endif %}>Job Seeker</option>
+                    <option value="employer" {% if current_role == 'employer' %}selected{% endif %}>Employer</option>
+                    <option value="admin" {% if current_role == 'admin' %}selected{% endif %}>Admin</option>
+                </select>
+            </div>
+            <div class="filter-field grow">
+                <label>Search</label>
+                <input type="text" name="search" value="{{ search }}" placeholder="Name, username or email">
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{{ url_for('admin.users') }}" class="btn btn-outline">Clear</a>
+        </form>
+
+        <div class="panel">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr>
+                            <td><strong>{{ u.full_name }}</strong>{% if u.id == current_user.id %} <span class="badge badge-info">You</span>{% endif %}</td>
+                            <td>{{ u.username }}</td>
+                            <td>{{ u.email }}</td>
+                            <td><span class="badge badge-role-{{ u.role }}">{{ u.role|capitalize }}</span></td>
+                            <td>{% if u.is_active %}<span class="badge badge-selected">Active</span>{% else %}<span class="badge badge-rejected">Inactive</span>{% endif %}</td>
+                            <td>{{ time_ago(u.created_at) }}</td>
+                            <td class="row-actions">
+                                <a href="{{ url_for('admin.edit_user', user_id=u.id) }}" class="btn btn-sm btn-outline"><i class="fa-solid fa-pen"></i></a>
+                                {% if u.id != current_user.id %}
+                                <form method="post" action="{{ url_for('admin.toggle_user', user_id=u.id) }}" class="inline-form">
+                                    <button class="btn btn-sm btn-ghost" title="Toggle active"><i class="fa-solid fa-power-off"></i></button>
+                                </form>
+                                <form method="post" action="{{ url_for('admin.delete_user', user_id=u.id) }}" class="inline-form" onsubmit="return confirm('Delete this user permanently?');">
+                                    <button class="btn btn-sm btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="7" class="empty-cell">No users found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% from "partials/macros.html" import render_pagination %}
+            {% set extra = '?role=' ~ current_role ~ '&search=' ~ search %}
+            {{ render_pagination(pagination, 'admin.users', extra=extra) }}
+        </div>
+    </div>
+</section>
+{% endblock %}

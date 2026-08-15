@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% from "partials/helpers.html" import upload_url, status_badge %}
+
+{% block content %}
+<section class="dashboard admin-dashboard">
+    <div class="container">
+        <div class="dashboard-head">
+            <div>
+                <h1>Employers</h1>
+                <p>Review and manage company accounts</p>
+            </div>
+        </div>
+
+        <form method="get" class="filter-bar">
+            <div class="filter-field">
+                <label>Status</label>
+                <select name="status" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    {% for s in statuses %}
+                    <option value="{{ s }}" {% if current_status == s %}selected{% endif %}>{{ s|capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-field grow">
+                <label>Search</label>
+                <input type="text" name="search" value="{{ search }}" placeholder="Company name or industry">
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{{ url_for('admin.employers') }}" class="btn btn-outline">Clear</a>
+        </form>
+
+        <div class="panel">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Company</th><th>Industry</th><th>Location</th><th>Status</th><th>Active</th><th>Joined</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for e in employers %}
+                        <tr>
+                            <td>
+                                <div class="cell-user">
+                                    <div class="cell-avatar">
+                                        {% if e.company_logo %}<img src="{{ upload_url(e.company_logo) }}" alt="">{% else %}<span>{{ e.company_name[:1] }}</span>{% endif %}
+                                    </div>
+                                    <strong>{{ e.company_name }}</strong>
+                                </div>
+                            </td>
+                            <td>{{ e.industry or '—' }}</td>
+                            <td>{{ e.location or '—' }}</td>
+                            <td>{{ status_badge(e.approval_status) }}</td>
+                            <td>{% if e.is_active %}<span class="badge badge-selected">Yes</span>{% else %}<span class="badge badge-rejected">No</span>{% endif %}</td>
+                            <td>{{ time_ago(e.created_at) }}</td>
+                            <td class="row-actions">
+                                {% if e.approval_status == 'pending' %}
+                                <form method="post" action="{{ url_for('admin.approve_employer', emp_id=e.id) }}" class="inline-form">
+                                    <button class="btn btn-sm btn-primary" title="Approve"><i class="fa-solid fa-check"></i></button>
+                                </form>
+                                <form method="post" action="{{ url_for('admin.reject_employer', emp_id=e.id) }}" class="inline-form">
+                                    <button class="btn btn-sm btn-danger" title="Reject"><i class="fa-solid fa-xmark"></i></button>
+                                </form>
+                                {% endif %}
+                                <form method="post" action="{{ url_for('admin.toggle_employer', emp_id=e.id) }}" class="inline-form">
+                                    <button class="btn btn-sm btn-ghost" title="Toggle active"><i class="fa-solid fa-power-off"></i></button>
+                                </form>
+                                <form method="post" action="{{ url_for('admin.delete_employer', emp_id=e.id) }}" class="inline-form" onsubmit="return confirm('Delete this employer and all their jobs?');">
+                                    <button class="btn btn-sm btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="7" class="empty-cell">No employers found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% from "partials/helpers.html" import upload_url, status_badge %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="{{ url_for('public.companies') }}">Companies</a> <span>/</span> {{ employer.company_name }}
+        </nav>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container company-detail-layout">
+        <div class="company-detail-main">
+            <div class="company-banner">
+                <div class="company-logo lg">
+                    {% if employer.company_logo %}<img src="{{ upload_url(employer.company_logo) }}">{% else %}<span>{{ employer.company_name[:1] }}</span>{% endif %}
+                </div>
+                <div>
+                    <h1>{{ employer.company_name }}</h1>
+                    <p class="company-industry">{{ employer.industry or '—' }} · {{ employer.company_size or '' }}</p>
+                    <p class="company-loc"><i class="fa-solid fa-location-dot"></i> {{ employer.location or '—' }}</p>
+                </div>
+            </div>
+
+            {% if employer.description %}
+            <div class="job-section">
+                <h3>About Company</h3>
+                <p>{{ employer.description|nl2br }}</p>
+            </div>
+            {% endif %}
+
+            <div class="job-section">
+                <h3>Currently Available Jobs ({{ company_jobs|length }})</h3>
+                {% if company_jobs %}
+                <div class="job-grid">
+                    {% for job in company_jobs %}
+                    <div class="job-card">
+                        <div class="job-card-top">
+                            <div class="job-logo"><span>{{ employer.company_name[:1] }}</span></div>
+                            <div class="job-card-head">
+                                <h3><a href="{{ url_for('public.job_detail', job_id=job.id) }}">{{ job.title }}</a></h3>
+                                <p class="job-company">{{ employer.company_name }}</p>
+                            </div>
+                        </div>
+                        <div class="job-meta">
+                            <span><i class="fa-solid fa-location-dot"></i> {{ job.location }}</span>
+                            <span><i class="fa-solid fa-clock"></i> {{ job.employment_type }}</span>
+                            <span><i class="fa-solid fa-money-bill-wave"></i> {{ job.salary or 'Negotiable' }}</span>
+                        </div>
+                        <div class="job-card-bottom">
+                            <a href="{{ url_for('public.job_detail', job_id=job.id) }}" class="btn btn-primary btn-sm">View Details</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state"><i class="fa-solid fa-briefcase"></i><p>No open positions right now.</p></div>
+                {% endif %}
+            </div>
+        </div>
+
+        <aside class="company-detail-side">
+            <div class="side-card">
+                <h4>Company Info</h4>
+                <ul class="overview-list">
+                    <li><i class="fa-solid fa-industry"></i> <span>{{ employer.industry or '—' }}</span></li>
+                    <li><i class="fa-solid fa-users"></i> <span>{{ employer.company_size or '—' }}</span></li>
+                    <li><i class="fa-solid fa-location-dot"></i> <span>{{ employer.location or '—' }}</span></li>
+                    {% if employer.website %}<li><i class="fa-solid fa-globe"></i> <a href="{{ employer.website }}" target="_blank">Website</a></li>{% endif %}
+                    {% if employer.contact_email %}<li><i class="fa-solid fa-envelope"></i> <span>{{ employer.contact_email }}</span></li>{% endif %}
+                    {% if employer.phone %}<li><i class="fa-solid fa-phone"></i> <span>{{ employer.phone }}</span></li>{% endif %}
+                </ul>
+            </div>
+        </aside>
+    </div>
+</section>
+{% endblock %}

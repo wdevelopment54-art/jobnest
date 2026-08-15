@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Contact Us</h1>
+        <p>We'd love to hear from you. Our team is here to help.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container contact-layout">
+        <!-- Contact form -->
+        <div class="contact-form-wrap">
+            <div class="panel">
+                <h2 class="contact-title">Send us a message</h2>
+                <p class="contact-subtitle">Fill out the form below and we'll get back to you as soon as possible.</p>
+                <form method="post" class="contact-form" id="contactForm" novalidate>
+                    {{ form.hidden_tag() }}
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.name.label }}<span class="req">*</span>
+                            {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), placeholder="Your full name") }}
+                            {% for e in form.name.errors %}<span class="error-text">{{ e }}</span>{% endfor %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.email.label }}<span class="req">*</span>
+                            {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="you@example.com") }}
+                            {% for e in form.email.errors %}<span class="error-text">{{ e }}</span>{% endfor %}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.phone.label }}
+                            {{ form.phone(class="form-control" + (" is-invalid" if form.phone.errors else ""), placeholder="e.g. 0300-1234567") }}
+                            {% for e in form.phone.errors %}<span class="error-text">{{ e }}</span>{% endfor %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.subject.label }}<span class="req">*</span>
+                            {{ form.subject(class="form-control" + (" is-invalid" if form.subject.errors else ""), placeholder="How can we help?") }}
+                            {% for e in form.subject.errors %}<span class="error-text">{{ e }}</span>{% endfor %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form.message.label }}<span class="req">*</span>
+                        {{ form.message(class="form-control" + (" is-invalid" if form.message.errors else ""), rows=6, placeholder="Write your message (at least 10 characters)...") }}
+                        {% for e in form.message.errors %}<span class="error-text">{{ e }}</span>{% endfor %}
+                    </div>
+                    {{ form.submit(class="btn btn-primary btn-block") }}
+                </form>
+            </div>
+        </div>
+
+        <!-- Contact info -->
+        <aside class="contact-info">
+            <div class="side-card">
+                <h4>Contact Information</h4>
+                <ul class="overview-list">
+                    <li>
+                        <span class="info-icon"><i class="fa-solid fa-phone"></i></span>
+                        <div>
+                            <strong>Phone</strong>
+                            <a href="{{ site.SITE_PHONE_HREF }}">{{ site.SITE_PHONE_DISPLAY }}</a>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="info-icon"><i class="fa-brands fa-whatsapp"></i></span>
+                        <div>
+                            <strong>WhatsApp</strong>
+                            <a href="{{ site.SITE_WHATSAPP_HREF }}">{{ site.SITE_WHATSAPP_NUMBER }}</a>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="info-icon"><i class="fa-solid fa-location-dot"></i></span>
+                        <div>
+                            <strong>Location</strong>
+                            <span>{{ site.SITE_ADDRESS }}</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="info-icon"><i class="fa-solid fa-envelope"></i></span>
+                        <div>
+                            <strong>Email</strong>
+                            <a href="mailto:{{ site.SITE_EMAIL }}">{{ site.SITE_EMAIL }}</a>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="info-icon"><i class="fa-solid fa-clock"></i></span>
+                        <div>
+                            <strong>Working Hours</strong>
+                            <span>Mon - Sat: 9:00 AM - 7:00 PM</span>
+                        </div>
+                    </li>
+                </ul>
+                <div class="contact-actions">
+                    <a href="{{ site.SITE_WHATSAPP_HREF }}?text={{ site.SITE_WHATSAPP_MESSAGE|urlencode }}" target="_blank" rel="noopener" class="btn btn-whatsapp btn-block">
+                        <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+                    </a>
+                    <a href="{{ site.SITE_PHONE_HREF }}" class="btn btn-outline btn-block">
+                        <i class="fa-solid fa-phone"></i> Call Us
+                    </a>
+                </div>
+            </div>
+
+            <div class="side-card location-card">
+                <h4>Our Location</h4>
+                <div class="map-placeholder">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <p class="map-city">{{ site.SITE_CITY }}</p>
+                    <p class="map-region">{{ site.SITE_STATE }}, {{ site.SITE_COUNTRY }}</p>
+                </div>
+                <a href="{{ site.SITE_MAP_URL }}" target="_blank" rel="noopener" class="btn btn-outline btn-block">
+                    <i class="fa-solid fa-diamond-turn-right"></i> Get Directions
+                </a>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-head"><h2>Frequently Asked Questions</h2></div>
+        <div class="faq-list">
+            <details class="faq-item"><summary>How do I create an account?</summary><p>Click "Sign Up" in the top navigation and choose Job Seeker or Employer.</p></details>
+            <details class="faq-item"><summary>Is it free to apply for jobs?</summary><p>Yes, job seekers can create profiles and apply for free.</p></details>
+            <details class="faq-item"><summary>How do employers post jobs?</summary><p>After registering and getting approved, employers can post jobs from their dashboard.</p></details>
+            <details class="faq-item"><summary>How is my data protected?</summary><p>We use secure password hashing, CSRF protection, and role-based access control.</p></details>
+        </div>
+    </div>
+</section>
+{% endblock %}

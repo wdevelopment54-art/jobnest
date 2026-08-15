@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% from "partials/helpers.html" import upload_url, status_badge %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="{{ url_for('public.jobs') }}">Jobs</a> <span>/</span> {{ job.title }}
+        </nav>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container job-detail-layout">
+        <div class="job-detail-main">
+            <div class="job-detail-head">
+                <div class="job-logo lg">
+                    {% if job.employer.company_logo %}
+                    <img src="{{ upload_url(job.employer.company_logo) }}" alt="{{ job.employer.company_name }}">
+                    {% else %}
+                    <span>{{ job.employer.company_name[:1] }}</span>
+                    {% endif %}
+                </div>
+                <div>
+                    <h1>{{ job.title }}</h1>
+                    <p class="job-company"><a href="{{ url_for('public.company_detail', employer_id=job.employer.id) }}">{{ job.employer.company_name }}</a></p>
+                    <div class="job-meta">
+                        <span><i class="fa-solid fa-location-dot"></i> {{ job.location }}</span>
+                        <span><i class="fa-solid fa-clock"></i> {{ job.employment_type }}</span>
+                        <span><i class="fa-solid fa-briefcase"></i> {{ job.experience or 'Any' }}</span>
+                        <span><i class="fa-solid fa-money-bill-wave"></i> {{ job.salary or 'Negotiable' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            {% if job.is_expired %}
+            <div class="alert alert-warning">This job's application deadline has passed. Applications are closed.</div>
+            {% elif already_applied %}
+            <div class="alert alert-info">You have already applied for this job.</div>
+            {% endif %}
+
+            <div class="job-section">
+                <h3>Job Description</h3>
+                <p>{{ job.description|nl2br }}</p>
+            </div>
+            {% if job.responsibilities %}
+            <div class="job-section">
+                <h3>Responsibilities</h3>
+                <p>{{ job.responsibilities|nl2br }}</p>
+            </div>
+            {% endif %}
+            {% if job.requirements %}
+            <div class="job-section">
+                <h3>Requirements</h3>
+                <p>{{ job.requirements|nl2br }}</p>
+            </div>
+            {% endif %}
+            {% if job.skills %}
+            <div class="job-section">
+                <h3>Required Skills</h3>
+                <div class="tag-list">
+                    {% for s in job.skills.split(',') %}<span class="tag">{{ s.strip() }}</span>{% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            <div class="job-section job-info-grid">
+                <div><strong>Education</strong><span>{{ job.education or 'Not specified' }}</span></div>
+                <div><strong>Experience</strong><span>{{ job.experience or 'Not specified' }}</span></div>
+                <div><strong>Posted</strong><span>{{ format_date(job.created_at) }}</span></div>
+                <div><strong>Deadline</strong><span>{{ format_date(job.deadline) if job.deadline else 'Open' }}</span></div>
+            </div>
+            {% if job.benefits %}
+            <div class="job-section">
+                <h3>Benefits</h3>
+                <p>{{ job.benefits|nl2br }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <aside class="job-detail-side">
+            <div class="side-card">
+                {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-block">Login to Apply</a>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-outline btn-block">Create Account</a>
+                {% elif already_applied %}
+                <div class="applied-badge"><i class="fa-solid fa-check-circle"></i> Already Applied</div>
+                {% elif job.is_expired %}
+                <button class="btn btn-secondary btn-block" disabled>Application Closed</button>
+                {% else %}
+                <a href="{{ url_for('seeker.apply', job_id=job.id) }}" class="btn btn-primary btn-block">Apply Now</a>
+                {% if current_user.is_jobseeker %}
+                    {% if is_saved %}
+                    <form method="post" action="{{ url_for('seeker.unsave_job', job_id=job.id) }}">
+                        <button class="btn btn-outline btn-block">Remove from Saved</button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="{{ url_for('seeker.save_job', job_id=job.id) }}">
+                        <button class="btn btn-outline btn-block"><i class="fa-regular fa-heart"></i> Save Job</button>
+                    </form>
+                    {% endif %}
+                {% endif %}
+                {% endif %}
+            </div>
+            <div class="side-card">
+                <h4>Job Overview</h4>
+                <ul class="overview-list">
+                    <li><i class="fa-solid fa-location-dot"></i> <span>{{ job.location }}</span></li>
+                    <li><i class="fa-solid fa-clock"></i> <span>{{ job.employment_type }}</span></li>
+                    <li><i class="fa-solid fa-briefcase"></i> <span>{{ job.experience or 'Any' }}</span></li>
+                    <li><i class="fa-solid fa-money-bill-wave"></i> <span>{{ job.salary or 'Negotiable' }}</span></li>
+                </ul>
+            </div>
+            <div class="side-card">
+                <a href="{{ url_for('public.company_detail', employer_id=job.employer.id) }}" class="btn btn-ghost btn-block">View Company</a>
+            </div>
+        </aside>
+    </div>
+</section>
+
+{% if related_jobs %}
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-head"><h2>Related Jobs</h2></div>
+        <div class="job-grid">
+            {% for j in related_jobs %}
+            <div class="job-card">
+                <div class="job-card-top">
+                    <div class="job-logo">
+                        {% if j.employer.company_logo %}<img src="{{ upload_url(j.employer.company_logo) }}">{% else %}<span>{{ j.employer.company_name[:1] }}</span>{% endif %}
+                    </div>
+                    <div class="job-card-head">
+                        <h3><a href="{{ url_for('public.job_detail', job_id=j.id) }}">{{ j.title }}</a></h3>
+                        <p class="job-company">{{ j.employer.company_name }}</p>
+                    </div>
+                </div>
+                <div class="job-meta">
+                    <span><i class="fa-solid fa-location-dot"></i> {{ j.location }}</span>
+                    <span><i class="fa-solid fa-clock"></i> {{ j.employment_type }}</span>
+                </div>
+                <div class="job-card-bottom">
+                    <a href="{{ url_for('public.job_detail', job_id=j.id) }}" class="btn btn-primary btn-sm">View Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

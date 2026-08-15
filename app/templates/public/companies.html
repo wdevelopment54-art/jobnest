@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import company_card, render_pagination %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Companies</h1>
+        <p>Discover top companies hiring now</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <form method="get" action="{{ url_for('public.companies') }}" class="company-search">
+            <input type="text" name="keyword" value="{{ request.args.get('keyword','') }}" placeholder="Search companies or industry">
+            <input type="text" name="location" value="{{ request.args.get('location','') }}" placeholder="Location">
+            <select name="industry">
+                <option value="">All Industries</option>
+                {% for i in industries %}<option value="{{ i }}" {% if request.args.get('industry')==i %}selected{% endif %}>{{ i }}</option>{% endfor %}
+            </select>
+            <button class="btn btn-primary">Search</button>
+        </form>
+
+        {% if companies %}
+        <div class="company-grid">
+            {% for comp in companies %}{{ company_card(comp) }}{% endfor %}
+        </div>
+        {% set extra = '?keyword=' ~ request.args.get('keyword','') ~ '&location=' ~ request.args.get('location','') ~ '&industry=' ~ request.args.get('industry','') %}
+        {{ render_pagination(pagination, 'public.companies', extra=extra) }}
+        {% else %}
+        <div class="empty-state">
+            <i class="fa-solid fa-building"></i>
+            <p>No companies found.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

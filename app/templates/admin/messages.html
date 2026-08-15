@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="dashboard admin-dashboard">
+    <div class="container">
+        <div class="dashboard-head">
+            <div>
+                <h1>Contact Messages</h1>
+                <p>Messages submitted through the contact form</p>
+            </div>
+        </div>
+
+        <form method="get" class="filter-bar">
+            <div class="filter-field">
+                <label>Status</label>
+                <select name="status" onchange="this.form.submit()">
+                    <option value="">All</option>
+                    <option value="unread" {% if current_status == 'unread' %}selected{% endif %}>Unread</option>
+                    <option value="read" {% if current_status == 'read' %}selected{% endif %}>Read</option>
+                </select>
+            </div>
+            <a href="{{ url_for('admin.messages') }}" class="btn btn-outline">Clear</a>
+        </form>
+
+        <div class="panel">
+            <ul class="message-list">
+                {% for m in messages %}
+                <li class="message-item {% if m.status == 'unread' %}unread{% endif %}">
+                    <div class="message-head">
+                        <div>
+                            <strong>{{ m.name }}</strong>
+                            <a href="mailto:{{ m.email }}">{{ m.email }}</a>
+                            {% if m.phone %}<span class="muted">· {{ m.phone }}</span>{% endif %}
+                        </div>
+                        <div class="message-meta">
+                            <span class="badge {{ 'badge-info' if m.status == 'unread' else 'badge-pending' }}">{{ m.status|capitalize }}</span>
+                            <span>{{ time_ago(m.created_at) }}</span>
+                        </div>
+                    </div>
+                    <p class="message-subject">{{ m.subject }}</p>
+                    <p class="message-body">{{ m.message }}</p>
+                    <div class="message-actions">
+                        <form method="post" action="{{ url_for('admin.toggle_message_read', msg_id=m.id) }}" class="inline-form">
+                            <button class="btn btn-sm btn-ghost">{% if m.status == 'unread' %}Mark Read{% else %}Mark Unread{% endif %}</button>
+                        </form>
+                        <form method="post" action="{{ url_for('admin.delete_message', msg_id=m.id) }}" class="inline-form" onsubmit="return confirm('Delete this message?');">
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </li>
+                {% else %}
+                <li class="empty-cell">No messages found.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock %}

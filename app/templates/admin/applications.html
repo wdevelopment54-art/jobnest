@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% from "partials/helpers.html" import status_badge %}
+
+{% block content %}
+<section class="dashboard admin-dashboard">
+    <div class="container">
+        <div class="dashboard-head">
+            <div>
+                <h1>Applications</h1>
+                <p>Monitor all candidate applications</p>
+            </div>
+        </div>
+
+        <form method="get" class="filter-bar">
+            <div class="filter-field">
+                <label>Status</label>
+                <select name="status" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    {% for s in statuses %}
+                    <option value="{{ s }}" {% if current_status == s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-field">
+                <label>Job</label>
+                <select name="job_id" onchange="this.form.submit()">
+                    <option value="">All Jobs</option>
+                    {% for j in jobs %}
+                    <option value="{{ j.id }}" {% if current_job == j.id %}selected{% endif %}>{{ j.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-field">
+                <label>Employer</label>
+                <select name="employer_id" onchange="this.form.submit()">
+                    <option value="">All Employers</option>
+                    {% for e in employers %}
+                    <option value="{{ e.id }}" {% if current_employer == e.id %}selected{% endif %}>{{ e.company_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <a href="{{ url_for('admin.applications') }}" class="btn btn-outline">Clear</a>
+        </form>
+
+        <div class="panel">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Candidate</th><th>Job</th><th>Company</th><th>Status</th><th>Applied</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for a in applications %}
+                        <tr>
+                            <td><strong>{{ a.job_seeker.user.full_name }}</strong><span class="muted">{{ a.job_seeker.user.email }}</span></td>
+                            <td>{{ a.job.title }}</td>
+                            <td>{{ a.job.employer.company_name }}</td>
+                            <td>{{ status_badge(a.status) }}</td>
+                            <td>{{ time_ago(a.applied_at) }}</td>
+                            <td class="row-actions">
+                                <a href="{{ url_for('employer.application_detail', app_id=a.id) }}" class="btn btn-sm btn-outline" title="Review"><i class="fa-solid fa-eye"></i></a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="6" class="empty-cell">No applications found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% from "partials/macros.html" import render_pagination %}
+            {% set extra = '?status=' ~ current_status ~ '&job_id=' ~ (current_job or '') ~ '&employer_id=' ~ (current_employer or '') %}
+            {{ render_pagination(pagination, 'admin.applications', extra=extra) }}
+        </div>
+    </div>
+</section>
+{% endblock %}

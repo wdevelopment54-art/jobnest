@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "partials/helpers.html" import upload_url, status_badge %}
+
+{% block content %}
+<section class="dashboard">
+    <div class="container">
+        <div class="dashboard-head">
+            <div><h1>Saved Jobs</h1><p>Jobs you've bookmarked</p></div>
+        </div>
+
+        {% if saved %}
+        <div class="job-grid">
+            {% for s in saved %}
+            {% set job = s.job %}
+            <div class="job-card">
+                <div class="job-card-top">
+                    <div class="job-logo">{% if job.employer.company_logo %}<img src="{{ upload_url(job.employer.company_logo) }}">{% else %}<span>{{ job.employer.company_name[:1] }}</span>{% endif %}</div>
+                    <div class="job-card-head"><h3><a href="{{ url_for('public.job_detail', job_id=job.id) }}">{{ job.title }}</a></h3><p class="job-company">{{ job.employer.company_name }}</p></div>
+                </div>
+                <div class="job-meta">
+                    <span><i class="fa-solid fa-location-dot"></i> {{ job.location }}</span>
+                    <span><i class="fa-solid fa-clock"></i> {{ job.employment_type }}</span>
+                    <span><i class="fa-solid fa-money-bill-wave"></i> {{ job.salary or 'Negotiable' }}</span>
+                </div>
+                <div class="job-card-bottom">
+                    <span class="job-date">Saved {{ time_ago(s.created_at) }}</span>
+                    <div class="job-actions">
+                        <form method="post" action="{{ url_for('seeker.unsave_job', job_id=job.id) }}"><button class="btn btn-icon" title="Remove"><i class="fa-regular fa-heart"></i></button></form>
+                        <a href="{{ url_for('seeker.apply', job_id=job.id) }}" class="btn btn-primary btn-sm">Apply</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="fa-regular fa-heart"></i><p>No saved jobs yet. Browse and save jobs you like.</p><a href="{{ url_for('public.jobs') }}" class="btn btn-primary">Browse Jobs</a></div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

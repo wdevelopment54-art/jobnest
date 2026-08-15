@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Environment
+.env
+
+# Flask
+instance/
+*.sqlite3
+
+# Uploads (keep folder, ignore contents)
+app/static/uploads/*
+!app/static/uploads/.gitkeep
+
+# Migrations data
+*.db
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

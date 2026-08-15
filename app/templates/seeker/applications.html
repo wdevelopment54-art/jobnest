@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% from "partials/helpers.html" import upload_url, status_badge %}
+
+{% block content %}
+<section class="dashboard">
+    <div class="container">
+        <div class="dashboard-head">
+            <div><h1>My Applications</h1><p>Track the status of every application</p></div>
+        </div>
+
+        <div class="filter-tabs">
+            <a href="{{ url_for('seeker.applications') }}" class="tab {% if not current_status %}active{% endif %}">All</a>
+            {% for s in statuses %}
+            <a href="{{ url_for('seeker.applications', status=s) }}" class="tab {% if current_status == s %}active{% endif %}">{{ s }}</a>
+            {% endfor %}
+        </div>
+
+        {% if applications %}
+        <div class="app-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Job</th><th>Company</th><th>Applied</th><th>Status</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    {% for a in applications %}
+                    <tr>
+                        <td><a href="{{ url_for('public.job_detail', job_id=a.job.id) }}">{{ a.job.title }}</a></td>
+                        <td>{{ a.job.employer.company_name }}</td>
+                        <td>{{ format_date(a.applied_at) }}</td>
+                        <td>{{ status_badge(a.status) }}</td>
+                        <td>
+                            {% if a.status == 'Interview' and a.interview_date %}
+                            <span class="muted"><i class="fa-solid fa-calendar"></i> {{ format_date(a.interview_date) }} {{ a.interview_time or '' }}</span>
+                            {% else %}
+                            <span class="muted">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="fa-solid fa-paper-plane"></i><p>You haven't applied to any jobs yet.</p><a href="{{ url_for('public.jobs') }}" class="btn btn-primary">Browse Jobs</a></div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

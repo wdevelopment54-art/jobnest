@@ -1,0 +1,45 @@
+<nav class="navbar">
+    <div class="container navbar-inner">
+        <a href="{{ url_for('public.index') }}" class="brand">
+            <span class="brand-logo"><img src="{{ url_for('static', filename='images/logo.webp') }}" alt="{{ site.SITE_NAME }} logo" class="brand-logo-img"></span>
+            <span class="brand-name">{{ site.SITE_NAME }}</span>
+        </a>
+
+        <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" onclick="document.getElementById('navMenu').classList.toggle('open'); this.setAttribute('aria-expanded', document.getElementById('navMenu').classList.contains('open'))">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div class="nav-menu" id="navMenu">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('public.index') }}" class="{% if request.endpoint == 'public.index' %}active{% endif %}">Home</a></li>
+                <li><a href="{{ url_for('public.jobs') }}" class="{% if request.endpoint == 'public.jobs' %}active{% endif %}">Find Jobs</a></li>
+                <li><a href="{{ url_for('public.companies') }}" class="{% if request.endpoint == 'public.companies' %}active{% endif %}">Companies</a></li>
+                <li><a href="{{ url_for('public.about') }}" class="{% if request.endpoint == 'public.about' %}active{% endif %}">About Us</a></li>
+                <li><a href="{{ url_for('public.contact') }}" class="{% if request.endpoint == 'public.contact' %}active{% endif %}">Contact</a></li>
+            </ul>
+
+            <div class="nav-auth">
+                {% if current_user.is_authenticated %}
+                    {% set dash = url_for('seeker.dashboard') %}
+                    {% if current_user.is_admin %}{% set dash = url_for('admin.dashboard') %}{% endif %}
+                    {% if current_user.is_employer %}{% set dash = url_for('employer.dashboard') %}{% endif %}
+                    <a href="{{ dash }}" class="btn btn-ghost">Dashboard</a>
+                    {% if current_user.is_jobseeker %}
+                        <a href="{{ url_for('seeker.profile') }}" class="btn btn-ghost">Profile</a>
+                    {% elif current_user.is_employer %}
+                        <a href="{{ url_for('employer.company_profile') }}" class="btn btn-ghost">Company</a>
+                    {% else %}
+                        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-ghost">Admin</a>
+                    {% endif %}
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-ghost">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Sign Up</a>
+                {% endif %}
+                <a href="{{ site.SITE_WHATSAPP_HREF }}?text={{ site.SITE_WHATSAPP_MESSAGE|urlencode }}" target="_blank" rel="noopener" class="btn btn-whatsapp" title="Chat on WhatsApp">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>

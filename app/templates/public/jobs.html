@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import job_card, render_pagination %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Browse Jobs</h1>
+        <p>Find {{ pagination.total }} job opportunities matching your criteria</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container jobs-layout">
+        <!-- Filters -->
+        <aside class="filters">
+            <form method="get" action="{{ url_for('public.jobs') }}">
+                <h3>Filter Jobs</h3>
+                <div class="form-group">
+                    <label>Keyword</label>
+                    <input type="text" name="keyword" value="{{ request.args.get('keyword','') }}" placeholder="Search jobs">
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" name="location" value="{{ request.args.get('location','') }}" placeholder="City">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select name="category">
+                        <option value="">All Categories</option>
+                        {% for c in categories %}
+                        <option value="{{ c.id }}" {% if request.args.get('category')|int == c.id %}selected{% endif %}>{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Employment Type</label>
+                    <select name="employment_type">
+                        <option value="">All Types</option>
+                        {% for t in EMPLOYMENT_TYPES %}
+                        <option value="{{ t }}" {% if request.args.get('employment_type') == t %}selected{% endif %}>{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Experience</label>
+                    <select name="experience">
+                        <option value="">Any Experience</option>
+                        {% for e in EXPERIENCE_LEVELS %}
+                        <option value="{{ e }}" {% if request.args.get('experience') == e %}selected{% endif %}>{{ e }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Date Posted</label>
+                    <select name="date_posted">
+                        <option value="">Any Time</option>
+                        <option value="today" {% if request.args.get('date_posted')=='today' %}selected{% endif %}>Today</option>
+                        <option value="3days" {% if request.args.get('date_posted')=='3days' %}selected{% endif %}>Last 3 Days</option>
+                        <option value="week" {% if request.args.get('date_posted')=='week' %}selected{% endif %}>Last Week</option>
+                        <option value="month" {% if request.args.get('date_posted')=='month' %}selected{% endif %}>Last Month</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Apply Filters</button>
+                <a href="{{ url_for('public.jobs') }}" class="btn btn-outline btn-block">Clear</a>
+            </form>
+        </aside>
+
+        <!-- Results -->
+        <div class="jobs-results">
+            <div class="results-bar">
+                <span>{{ pagination.total }} jobs found</span>
+                <form method="get" action="{{ url_for('public.jobs') }}" class="sort-form">
+                    {% for k, v in request.args.items() %}
+                        {% if k != 'sort' and k != 'page' %}
+                        <input type="hidden" name="{{ k }}" value="{{ v }}">
+                        {% endif %}
+                    {% endfor %}
+                    <select name="sort" onchange="this.form.submit()">
+                        <option value="latest" {% if request.args.get('sort','latest')=='latest' %}selected{% endif %}>Latest</option>
+                        <option value="oldest" {% if request.args.get('sort')=='oldest' %}selected{% endif %}>Oldest</option>
+                        <option value="salary_low" {% if request.args.get('sort')=='salary_low' %}selected{% endif %}>Salary: Low to High</option>
+                        <option value="salary_high" {% if request.args.get('sort')=='salary_high' %}selected{% endif %}>Salary: High to Low</option>
+                    </select>
+                </form>
+            </div>
+
+            {% if jobs %}
+            <div class="job-grid">
+                {% for job in jobs %}{{ job_card(job) }}{% endfor %}
+            </div>
+            {% set extra = '?keyword=' ~ request.args.get('keyword','') ~ '&location=' ~ request.args.get('location','') ~ '&category=' ~ request.args.get('category','') ~ '&employment_type=' ~ request.args.get('employment_type','') ~ '&experience=' ~ request.args.get('experience','') ~ '&date_posted=' ~ request.args.get('date_posted','') ~ '&sort=' ~ request.args.get('sort','latest') %}
+            {{ render_pagination(pagination, 'public.jobs', extra=extra) }}
+            {% else %}
+            <div class="empty-state">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <p>No jobs found matching your filters. Try adjusting them.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

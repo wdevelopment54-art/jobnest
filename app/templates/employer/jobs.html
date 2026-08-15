@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% from "partials/helpers.html" import upload_url, status_badge %}
+
+{% block content %}
+<section class="dashboard">
+    <div class="container">
+        <div class="dashboard-head">
+            <div><h1>My Jobs</h1><p>Manage your job postings</p></div>
+            <a href="{{ url_for('employer.new_job') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Post Job</a>
+        </div>
+
+        <div class="filter-tabs">
+            <a href="{{ url_for('employer.jobs') }}" class="tab {% if not current_status %}active{% endif %}">All</a>
+            {% for s in statuses %}
+            <a href="{{ url_for('employer.jobs', status=s) }}" class="tab {% if current_status == s %}active{% endif %}">{{ s.title() }}</a>
+            {% endfor %}
+        </div>
+
+        {% if jobs %}
+        <div class="app-table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Title</th><th>Location</th><th>Type</th><th>Posted</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                    {% for j in jobs %}
+                    <tr>
+                        <td><a href="{{ url_for('public.job_detail', job_id=j.id) }}">{{ j.title }}</a></td>
+                        <td>{{ j.location }}</td>
+                        <td>{{ j.employment_type }}</td>
+                        <td>{{ format_date(j.created_at) }}</td>
+                        <td>{{ status_badge(j.status) }}</td>
+                        <td class="row-actions">
+                            <a href="{{ url_for('employer.edit_job', job_id=j.id) }}" class="btn btn-sm btn-outline">Edit</a>
+                            <form method="post" action="{{ url_for('employer.toggle_job', job_id=j.id) }}" class="inline-form">
+                                <button class="btn btn-sm btn-ghost">{% if j.status == 'active' %}Deactivate{% else %}Activate{% endif %}</button>
+                            </form>
+                            <form method="post" action="{{ url_for('employer.delete_job', job_id=j.id) }}" class="inline-form" onsubmit="return confirm('Delete this job?');">
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="fa-solid fa-briefcase"></i><p>No jobs found.</p><a href="{{ url_for('employer.new_job') }}" class="btn btn-primary">Post Your First Job</a></div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

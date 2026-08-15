@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container">
+        <div class="auth-card">
+            <h2>Create Your Account</h2>
+            <p class="auth-sub">Join thousands of professionals and employers</p>
+            <form method="post" novalidate>
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.full_name.label }}
+                    {{ form.full_name(class="form-control" + (" is-invalid" if form.full_name.errors else "")) }}
+                    {% for e in form.full_name.errors %}<span class="error-text">{{ e }}</span>{% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.username.label }}
+                    {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else "")) }}
+                    {% for e in form.username.errors %}<span class="error-text">{{ e }}</span>{% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label }}
+                    {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else "")) }}
+                    {% for e in form.email.errors %}<span class="error-text">{{ e }}</span>{% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.phone.label }}
+                    {{ form.phone(class="form-control" + (" is-invalid" if form.phone.errors else "")) }}
+                    {% for e in form.phone.errors %}<span class="error-text">{{ e }}</span>{% endfor %}
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form.password.label }}
+                        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else "")) }}
+                        {% for e in form.password.errors %}<span class="error-text">{{ e }}</span>{% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.confirm_password.label }}
+                        {{ form.confirm_password(class="form-control" + (" is-invalid" if form.confirm_password.errors else "")) }}
+                        {% for e in form.confirm_password.errors %}<span class="error-text">{{ e }}</span>{% endfor %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.account_type.label }}
+                    {{ form.account_type(class="form-control" + (" is-invalid" if form.account_type.errors else "")) }}
+                    {% for e in form.account_type.errors %}<span class="error-text">{{ e }}</span>{% endfor %}
+                </div>
+                <div class="form-check">
+                    {{ form.terms(class="form-check-input" + (" is-invalid" if form.terms.errors else "")) }}
+                    {{ form.terms.label }}
+                    {% for e in form.terms.errors %}<span class="error-text">{{ e }}</span>{% endfor %}
+                </div>
+                {{ form.submit(class="btn btn-primary btn-block") }}
+            </form>
+            <p class="auth-foot">Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a></p>
+        </div>
+    </div>
+</section>
+{% endblock %}

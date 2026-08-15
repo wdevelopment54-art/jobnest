@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "partials/helpers.html" import upload_url, status_badge %}
+
+{% block content %}
+<section class="dashboard">
+    <div class="container">
+        <div class="dashboard-head">
+            <div><h1>Applications</h1><p>Review candidates for your jobs</p></div>
+        </div>
+
+        <div class="filter-bar">
+            <form method="get" class="filter-inline">
+                <select name="job_id" onchange="this.form.submit()">
+                    <option value="">All Jobs</option>
+                    {% for j in jobs %}<option value="{{ j.id }}" {% if current_job == j.id %}selected{% endif %}>{{ j.title }}</option>{% endfor %}
+                </select>
+                <select name="status" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    {% for s in statuses %}<option value="{{ s }}" {% if current_status == s %}selected{% endif %}>{{ s }}</option>{% endfor %}
+                </select>
+            </form>
+        </div>
+
+        {% if applications %}
+        <div class="app-table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Candidate</th><th>Job</th><th>Applied</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody>
+                    {% for a in applications %}
+                    <tr>
+                        <td>
+                            <div class="cand-cell">
+                                <div class="avatar-sm">{{ a.job_seeker.user.full_name[:1] }}</div>
+                                <div><strong>{{ a.job_seeker.user.full_name }}</strong><span>{{ a.job_seeker.user.email }}</span></div>
+                            </div>
+                        </td>
+                        <td>{{ a.job.title }}</td>
+                        <td>{{ format_date(a.applied_at) }}</td>
+                        <td>{{ status_badge(a.status) }}</td>
+                        <td><a href="{{ url_for('employer.application_detail', app_id=a.id) }}" class="btn btn-sm btn-primary">Review</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="fa-solid fa-inbox"></i><p>No applications match your filters.</p></div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

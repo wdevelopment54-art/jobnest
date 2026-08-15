@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="dashboard">
+    <div class="container">
+        <div class="dashboard-head">
+            <div><h1>Notifications</h1><p>Stay updated on your applications</p></div>
+            <form method="post" action="{{ url_for('seeker.mark_all_read') }}"><button class="btn btn-outline">Mark all as read</button></form>
+        </div>
+
+        {% if notifications %}
+        <ul class="note-list full">
+            {% for n in notifications %}
+            <li class="{% if not n.is_read %}unread{% endif %}">
+                <div class="note-body">
+                    <strong>{{ n.title }}</strong>
+                    <p>{{ n.message }}</p>
+                    <span>{{ time_ago(n.created_at) }}</span>
+                </div>
+                {% if not n.is_read %}
+                <form method="post" action="{{ url_for('seeker.mark_read', note_id=n.id) }}"><button class="btn btn-sm btn-ghost">Mark read</button></form>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="empty-state"><i class="fa-solid fa-bell"></i><p>No notifications yet.</p></div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

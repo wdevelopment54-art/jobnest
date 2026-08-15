@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>About Us</h1>
+        <p>Connecting talent with opportunity</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container about-layout">
+        <div class="about-main">
+            <h2>Who We Are</h2>
+            <p>{{ site.SITE_NAME }} is a modern recruitment platform built to bridge the gap between ambitious job seekers and forward-thinking employers. We believe that finding the right job or the right candidate should be simple, transparent, and efficient.</p>
+
+            <div class="mission-vision">
+                <div class="mv-card">
+                    <span class="mv-icon"><i class="fa-solid fa-bullseye"></i></span>
+                    <h3>Our Mission</h3>
+                    <p>To make job searching and hiring easier, faster and more accessible.</p>
+                </div>
+                <div class="mv-card">
+                    <span class="mv-icon"><i class="fa-solid fa-eye"></i></span>
+                    <h3>Our Vision</h3>
+                    <p>To create a trusted digital platform where talented people can connect with the right opportunities.</p>
+                </div>
+            </div>
+
+            <h3>Why Choose Us</h3>
+            <ul class="check-list">
+                <li>Verified employers and companies</li>
+                <li>Smart job search and filtering</li>
+                <li>Secure resume and profile management</li>
+                <li>Real-time application tracking</li>
+                <li>Role-based dashboards for seekers, employers, and admins</li>
+                <li>Friendly, responsive design on every device</li>
+            </ul>
+        </div>
+        <aside class="about-side">
+            <div class="side-card">
+                <h4>Platform Features</h4>
+                <ul class="check-list">
+                    <li>Advanced job search & filters</li>
+                    <li>Company profiles & directories</li>
+                    <li>One-click job saving</li>
+                    <li>Application management</li>
+                    <li>Employer approval workflow</li>
+                    <li>Admin analytics dashboard</li>
+                </ul>
+            </div>
+            <div class="side-card contact-snippet">
+                <h4>Get in Touch</h4>
+                <ul class="overview-list">
+                    <li><i class="fa-solid fa-phone"></i> <a href="{{ site.SITE_PHONE_HREF }}">{{ site.SITE_PHONE_DISPLAY }}</a></li>
+                    <li><i class="fa-solid fa-location-dot"></i> <span>{{ site.SITE_ADDRESS }}</span></li>
+                    <li><i class="fa-solid fa-envelope"></i> <a href="mailto:{{ site.SITE_EMAIL }}">{{ site.SITE_EMAIL }}</a></li>
+                </ul>
+                <a href="{{ url_for('public.contact') }}" class="btn btn-primary btn-block">Contact Us</a>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-head"><h2>Designed for Everyone</h2></div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <i class="fa-solid fa-user-graduate"></i>
+                <h4>For Job Seekers</h4>
+                <p>Build a profile, search thousands of roles, save jobs, and track every application from one dashboard.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa-solid fa-building"></i>
+                <h4>For Employers</h4>
+                <p>Showcase your company, post openings, and manage candidates through a streamlined hiring pipeline.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa-solid fa-shield-halved"></i>
+                <h4>Trusted & Secure</h4>
+                <p>We protect accounts with strong hashing, CSRF protection, and strict role-based authorization.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container cta-grid">
+        <div class="cta-card cta-seeker"><h3>Job Seeker Benefits</h3><p>Free profile, saved jobs, application tracking, and notifications.</p><a href="{{ url_for('auth.register') }}" class="btn btn-light">Join as Seeker</a></div>
+        <div class="cta-card cta-employer"><h3>Employer Benefits</h3><p>Post jobs, manage candidates, schedule interviews, and hire faster.</p><a href="{{ url_for('auth.register') }}" class="btn btn-light">Join as Employer</a></div>
+    </div>
+</section>
+{% endblock %}

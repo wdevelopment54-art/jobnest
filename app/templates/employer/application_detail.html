@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% from "partials/helpers.html" import upload_url, status_badge %}
+
+{% block content %}
+<section class="dashboard">
+    <div class="container">
+        <div class="dashboard-head">
+            <div><h1>Application Review</h1><p>{{ application.job.title }}</p></div>
+            <a href="{{ url_for('employer.applications') }}" class="btn btn-outline">Back</a>
+        </div>
+
+        <div class="app-detail-layout">
+            <div class="app-detail-main">
+                <div class="panel">
+                    <div class="candidate-head">
+                        <div class="avatar-lg">{{ application.job_seeker.user.full_name[:1] }}</div>
+                        <div>
+                            <h2>{{ application.job_seeker.user.full_name }}</h2>
+                            <p>{{ application.job_seeker.user.email }} · {{ application.job_seeker.user.phone or 'No phone' }}</p>
+                            <p class="muted">{{ application.job_seeker.location or '' }}</p>
+                        </div>
+                        <div class="status-big">{{ status_badge(application.status) }}</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>Candidate Profile</h3>
+                    <div class="profile-fields">
+                        <div><strong>Skills</strong><span>{{ application.job_seeker.skills or '—' }}</span></div>
+                        <div><strong>Education</strong><span>{{ application.job_seeker.education or '—' }}</span></div>
+                        <div><strong>Experience</strong><span>{{ application.job_seeker.experience or '—' }}</span></div>
+                        <div><strong>Languages</strong><span>{{ application.job_seeker.languages or '—' }}</span></div>
+                    </div>
+                    {% if application.job_seeker.summary %}<p class="summary">{{ application.job_seeker.summary }}</p>{% endif %}
+                    {% if resume_url %}<a href="{{ resume_url }}" target="_blank" class="btn btn-outline btn-sm"><i class="fa-solid fa-file-pdf"></i> View Resume</a>{% endif %}
+                </div>
+
+                <div class="panel">
+                    <h3>Cover Letter</h3>
+                    <p>{{ application.cover_letter or 'No cover letter provided.' }}</p>
+                </div>
+
+                {% if application.status == 'Interview' %}
+                <div class="panel interview-box">
+                    <h3>Interview Details</h3>
+                    <p><i class="fa-solid fa-calendar"></i> {{ format_date(application.interview_date) if application.interview_date else 'Not set' }}
+                       {% if application.interview_time %} at {{ application.interview_time }}{% endif %}</p>
+                    {% if application.interview_notes %}<p>{{ application.interview_notes }}</p>{% endif %}
+                </div>
+                {% endif %}
+                {% if application.status == 'Rejected' and application.rejection_reason %}
+                <div class="panel"><h3>Rejection Reason</h3><p>{{ application.rejection_reason }}</p></div>
+                {% endif %}
+            </div>
+
+            <aside class="app-detail-side">
+                <div class="side-card">
+                    <h4>Update Status</h4>
+                    <form method="post" novalidate>
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">{{ form.status(class="form-control") }}</div>
+                        <div class="form-group">{{ form.interview_date.label }}{{ form.interview_date(class="form-control") }}</div>
+                        <div class="form-group">{{ form.interview_time.label }}{{ form.interview_time(class="form-control") }}</div>
+                        <div class="form-group">{{ form.interview_notes.label }}{{ form.interview_notes(class="form-control", rows=2) }}</div>
+                        <div class="form-group">{{ form.employer_notes.label }}{{ form.employer_notes(class="form-control", rows=2) }}</div>
+                        <div class="form-group">{{ form.rejection_reason.label }}{{ form.rejection_reason(class="form-control", rows=2) }}</div>
+                        {{ form.submit(class="btn btn-primary btn-block") }}
+                    </form>
+                </div>
+                <div class="side-card">
+                    <h4>Applied</h4>
+                    <p class="muted">{{ format_date(application.applied_at) }}</p>
+                    <h4>Last Updated</h4>
+                    <p class="muted">{{ format_date(application.status_updated_at) }}</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

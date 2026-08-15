@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="dashboard admin-dashboard">
+    <div class="container narrow">
+        <div class="dashboard-head">
+            <div>
+                <h1>{{ title }}</h1>
+                <p>{% if user %}Editing {{ user.full_name }}{% else %}Create a new platform account{% endif %}</p>
+            </div>
+            <a href="{{ url_for('admin.users') }}" class="btn btn-outline">Back to Users</a>
+        </div>
+
+        <div class="panel">
+            <form method="post" class="form-grid" novalidate>
+                {{ form.hidden_tag() }}
+                <div class="form-field">
+                    {{ form.full_name.label }}
+                    {{ form.full_name(class="input" + (" is-invalid" if form.full_name.errors else "")) }}
+                    {% for e in form.full_name.errors %}<span class="error">{{ e }}</span>{% endfor %}
+                </div>
+                <div class="form-field">
+                    {{ form.username.label }}
+                    {{ form.username(class="input" + (" is-invalid" if form.username.errors else "")) }}
+                    {% for e in form.username.errors %}<span class="error">{{ e }}</span>{% endfor %}
+                </div>
+                <div class="form-field">
+                    {{ form.email.label }}
+                    {{ form.email(class="input" + (" is-invalid" if form.email.errors else "")) }}
+                    {% for e in form.email.errors %}<span class="error">{{ e }}</span>{% endfor %}
+                </div>
+                <div class="form-field">
+                    {{ form.phone.label }}
+                    {{ form.phone(class="input" + (" is-invalid" if form.phone.errors else "")) }}
+                    {% for e in form.phone.errors %}<span class="error">{{ e }}</span>{% endfor %}
+                </div>
+                <div class="form-field">
+                    {{ form.role.label }}
+                    {{ form.role(class="input" + (" is-invalid" if form.role.errors else "")) }}
+                    {% for e in form.role.errors %}<span class="error">{{ e }}</span>{% endfor %}
+                </div>
+                <div class="form-field form-field-check">
+                    {{ form.is_active() }}
+                    {{ form.is_active.label }}
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save</button>
+                    <a href="{{ url_for('admin.users') }}" class="btn btn-ghost">Cancel</a>
+                </div>
+            </form>
+            {% if not user %}
+            <p class="muted small">New users are created with the default password <code>ChangeMe123!</code> and should be asked to change it.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

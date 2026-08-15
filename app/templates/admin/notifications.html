@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="dashboard admin-dashboard">
+    <div class="container">
+        <div class="dashboard-head">
+            <div>
+                <h1>Notifications</h1>
+                <p>Your admin notifications</p>
+            </div>
+        </div>
+
+        <div class="panel">
+            {% if notifications %}
+            <ul class="note-list">
+                {% for n in notifications %}
+                <li class="{% if not n.is_read %}unread{% endif %}">
+                    <strong>{{ n.title }}</strong>
+                    <p>{{ n.message }}</p>
+                    <span>{{ time_ago(n.created_at) }}</span>
+                    {% if n.link %}<a href="{{ n.link }}" class="btn btn-sm btn-outline">Open</a>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="muted">No notifications.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

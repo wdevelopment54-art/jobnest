@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% from "partials/helpers.html" import upload_url, status_badge %}
+
+{% block content %}
+<section class="dashboard">
+    <div class="container">
+        <div class="dashboard-head">
+            <div>
+                <h1>Employer Dashboard</h1>
+                <p>{{ employer.company_name }}{% if employer.approval_status != 'approved' %} <span class="badge badge-pending">Pending Approval</span>{% endif %}</p>
+            </div>
+            <div class="quick-actions">
+                <a href="{{ url_for('employer.new_job') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Post Job</a>
+                <a href="{{ url_for('employer.company_profile') }}" class="btn btn-outline"><i class="fa-solid fa-building"></i> Company</a>
+            </div>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-briefcase"></i></div><div class="stat-body"><h3>{{ counts.total_jobs }}</h3><p>Total Jobs</p></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-check-circle"></i></div><div class="stat-body"><h3>{{ counts.active_jobs }}</h3><p>Active Jobs</p></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div><div class="stat-body"><h3>{{ counts.pending }}</h3><p>Pending Approval</p></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-clock-rotate-left"></i></div><div class="stat-body"><h3>{{ counts.expired }}</h3><p>Expired</p></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-paper-plane"></i></div><div class="stat-body"><h3>{{ counts.total_apps }}</h3><p>Total Applications</p></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-envelope"></i></div><div class="stat-body"><h3>{{ counts.new_apps }}</h3><p>New Applications</p></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-star"></i></div><div class="stat-body"><h3>{{ counts.shortlisted }}</h3><p>Shortlisted</p></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-calendar-check"></i></div><div class="stat-body"><h3>{{ counts.interviews }}</h3><p>Interviews</p></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-check"></i></div><div class="stat-body"><h3>{{ counts.selected }}</h3><p>Selected</p></div></div>
+        </div>
+
+        <div class="dashboard-cols">
+            <div class="dash-col">
+                <div class="panel">
+                    <div class="panel-head"><h3>Recent Applications</h3><a href="{{ url_for('employer.applications') }}">View all</a></div>
+                    {% if recent_apps %}
+                    <ul class="app-list">
+                        {% for a in recent_apps %}
+                        <li>
+                            <div><strong>{{ a.job_seeker.user.full_name }}</strong><span>{{ a.job.title }}</span></div>
+                            <div class="app-meta">{{ status_badge(a.status) }}<span>{{ time_ago(a.applied_at) }}</span></div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="muted">No applications yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="dash-col">
+                <div class="panel">
+                    <div class="panel-head"><h3>Recent Jobs</h3><a href="{{ url_for('employer.jobs') }}">Manage</a></div>
+                    {% if recent_jobs %}
+                    <ul class="app-list">
+                        {% for j in recent_jobs %}
+                        <li>
+                            <div><strong>{{ j.title }}</strong><span>{{ j.location }}</span></div>
+                            <div class="app-meta">{{ status_badge(j.status) }}</div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="muted">No jobs posted yet.</p>
+                    {% endif %}
+                </div>
+                <div class="panel">
+                    <div class="panel-head"><h3>Notifications</h3><a href="{{ url_for('employer.notifications') }}">All</a></div>
+                    {% if notifications %}
+                    <ul class="note-list">
+                        {% for n in notifications %}
+                        <li class="{% if not n.is_read %}unread{% endif %}"><strong>{{ n.title }}</strong><p>{{ n.message }}</p><span>{{ time_ago(n.created_at) }}</span></li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="muted">No notifications.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

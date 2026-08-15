@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import job_card, company_card, stat_card %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero hero-banner-section">
+    <div class="container">
+        <div class="hero-content">
+            <span class="hero-badge"><i class="fa-solid fa-bolt"></i> Trusted by job seekers & employers</span>
+            <h1>Find Your <span class="accent">Dream Job</span></h1>
+            <p>Discover opportunities, connect with employers, and take the next step in your career.</p>
+            <form class="hero-search" action="{{ url_for('public.jobs') }}" method="get">
+                <div class="search-field">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" name="keyword" placeholder="Job title, skill or keyword">
+                </div>
+                <div class="search-field">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <input type="text" name="location" placeholder="City or location (e.g. {{ site.SITE_CITY }})">
+                </div>
+                <div class="search-field">
+                    <select name="category">
+                        <option value="">All Categories</option>
+                        {% for c in categories %}
+                        <option value="{{ c.id }}">{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-search">Search Jobs</button>
+            </form>
+            <div class="hero-stats">
+                <div><strong>{{ stats.jobs }}</strong><span>Live Jobs</span></div>
+                <div><strong>{{ stats.companies }}</strong><span>Companies</span></div>
+                <div><strong>{{ stats.seekers }}</strong><span>Job Seekers</span></div>
+                <div><strong>{{ stats.applications }}</strong><span>Applications</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Categories -->
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <h2>Popular Job Categories</h2>
+            <p>Explore opportunities by industry</p>
+        </div>
+        <div class="category-grid">
+            {% for c in categories %}
+            <a href="{{ url_for('public.jobs', category=c.id) }}" class="category-card">
+                <span class="category-icon"><i class="fa-solid fa-layer-group"></i></span>
+                <h4>{{ c.name }}</h4>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Jobs -->
+{% if featured_jobs %}
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-head">
+            <h2>Featured Jobs</h2>
+            <a href="{{ url_for('public.jobs') }}" class="link-more">Browse all <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="job-grid">
+            {% for job in featured_jobs %}{{ job_card(job) }}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Latest Jobs -->
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <h2>Latest Jobs</h2>
+            <a href="{{ url_for('public.jobs') }}" class="link-more">Browse all <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="job-grid">
+            {% for job in latest_jobs %}{{ job_card(job) }}{% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Why choose us -->
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-head">
+            <h2>Why Choose Our Platform?</h2>
+            <p>Everything you need to hire and get hired, in one place</p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <h4>Easy Job Search</h4>
+                <p>Powerful filters for title, location, category, type, and experience help you find the right role fast.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa-solid fa-circle-check"></i>
+                <h4>Verified Listings</h4>
+                <p>Employers and jobs are reviewed by our team so you can trust what you see.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa-solid fa-paper-plane"></i>
+                <h4>Simple Applications</h4>
+                <p>Apply to jobs and upload your resume in just a few clicks.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa-solid fa-building"></i>
+                <h4>Employer Management</h4>
+                <p>Post jobs, review candidates, and manage hiring from a clean dashboard.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa-solid fa-mobile-screen"></i>
+                <h4>Responsive Platform</h4>
+                <p>A modern experience that works beautifully on desktop, tablet, and mobile.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa-solid fa-lock"></i>
+                <h4>Secure Accounts</h4>
+                <p>Your data is protected with hashed passwords, CSRF protection, and role-based access.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How it works -->
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <h2>How It Works</h2>
+            <p>Get hired in three simple steps</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <span class="step-num">1</span>
+                <h4>Create an Account</h4>
+                <p>Sign up as a job seeker or employer in less than a minute.</p>
+            </div>
+            <div class="step-card">
+                <span class="step-num">2</span>
+                <h4>Search & Apply</h4>
+                <p>Browse thousands of jobs and apply with your resume.</p>
+            </div>
+            <div class="step-card">
+                <span class="step-num">3</span>
+                <h4>Get Hired</h4>
+                <p>Track applications and land your dream role.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Companies -->
+{% if companies %}
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-head">
+            <h2>Featured Companies</h2>
+            <a href="{{ url_for('public.companies') }}" class="link-more">View all <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="company-grid">
+            {% for comp in companies %}{{ company_card(comp) }}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTAs -->
+<section class="section">
+    <div class="container cta-grid">
+        <div class="cta-card cta-seeker">
+            <h3>For Job Seekers</h3>
+            <p>Find your perfect job match and grow your career.</p>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-light">Get Started</a>
+        </div>
+        <div class="cta-card cta-employer">
+            <h3>For Employers</h3>
+            <p>Post jobs and find the best talent quickly.</p>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-light">Post a Job</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

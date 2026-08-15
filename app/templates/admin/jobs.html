@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% from "partials/helpers.html" import status_badge %}
+
+{% block content %}
+<section class="dashboard admin-dashboard">
+    <div class="container">
+        <div class="dashboard-head">
+            <div>
+                <h1>Jobs</h1>
+                <p>Approve, reject and manage all job postings</p>
+            </div>
+        </div>
+
+        <form method="get" class="filter-bar">
+            <div class="filter-field">
+                <label>Status</label>
+                <select name="status" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    {% for s in statuses %}
+                    <option value="{{ s }}" {% if current_status == s %}selected{% endif %}>{{ s|capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-field grow">
+                <label>Search</label>
+                <input type="text" name="search" value="{{ search }}" placeholder="Job title or location">
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{{ url_for('admin.jobs') }}" class="btn btn-outline">Clear</a>
+        </form>
+
+        <div class="panel">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th><th>Company</th><th>Category</th><th>Location</th><th>Status</th><th>Posted</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for j in jobs %}
+                        <tr>
+                            <td><strong>{{ j.title }}</strong>{% if j.is_featured %} <span class="badge badge-featured">Featured</span>{% endif %}</td>
+                            <td>{{ j.employer.company_name }}</td>
+                            <td>{{ j.category.name if j.category else '—' }}</td>
+                            <td>{{ j.location }}</td>
+                            <td>{{ status_badge(j.status) }}</td>
+                            <td>{{ time_ago(j.created_at) }}</td>
+                            <td class="row-actions">
+                                <a href="{{ url_for('public.job_detail', job_id=j.id) }}" class="btn btn-sm btn-outline" title="View"><i class="fa-solid fa-eye"></i></a>
+                                {% if j.status == 'pending' %}
+                                <form method="post" action="{{ url_for('admin.approve_job', job_id=j.id) }}" class="inline-form">
+                                    <button class="btn btn-sm btn-primary" title="Approve"><i class="fa-solid fa-check"></i></button>
+                                </form>
+                                <form method="post" action="{{ url_for('admin.reject_job', job_id=j.id) }}" class="inline-form">
+                                    <button class="btn btn-sm btn-danger" title="Reject"><i class="fa-solid fa-xmark"></i></button>
+                                </form>
+                                {% endif %}
+                                {% if j.status in ['active', 'inactive'] %}
+                                <form method="post" action="{{ url_for('admin.toggle_job', job_id=j.id) }}" class="inline-form">
+                                    <button class="btn btn-sm btn-ghost" title="Toggle active"><i class="fa-solid fa-power-off"></i></button>
+                                </form>
+                                {% endif %}
+                                <form method="post" action="{{ url_for('admin.delete_job', job_id=j.id) }}" class="inline-form" onsubmit="return confirm('Delete this job permanently?');">
+                                    <button class="btn btn-sm btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="7" class="empty-cell">No jobs found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% from "partials/macros.html" import render_pagination %}
+            {% set extra = '?status=' ~ current_status ~ '&search=' ~ search %}
+            {{ render_pagination(pagination, 'admin.jobs', extra=extra) }}
+        </div>
+    </div>
+</section>
+{% endblock %}

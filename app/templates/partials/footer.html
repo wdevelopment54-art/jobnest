@@ -1,0 +1,74 @@
+<footer class="footer">
+    <div class="container footer-grid">
+        <div class="footer-col footer-brand">
+            <div class="brand">
+                <span class="brand-logo"><img src="{{ url_for('static', filename='images/logo.webp') }}" alt="{{ site.SITE_NAME }} logo" class="brand-logo-img"></span>
+                <span class="brand-name">{{ site.SITE_NAME }}</span>
+            </div>
+            <p class="footer-about">{{ site.SITE_NAME }} connects talented professionals with great companies. We make hiring and job hunting simpler, faster, and more accessible for everyone.</p>
+            <div class="footer-social">
+                <a href="{{ site.SITE_FACEBOOK_URL }}" aria-label="Facebook" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="{{ site.SITE_TWITTER_URL }}" aria-label="Twitter" target="_blank" rel="noopener"><i class="fa-brands fa-twitter"></i></a>
+                <a href="{{ site.SITE_LINKEDIN_URL }}" aria-label="LinkedIn" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="{{ site.SITE_INSTAGRAM_URL }}" aria-label="Instagram" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4>Company</h4>
+            <ul class="footer-links">
+                <li><a href="{{ url_for('public.index') }}">Home</a></li>
+                <li><a href="{{ url_for('public.about') }}">About Us</a></li>
+                <li><a href="{{ url_for('public.contact') }}">Contact Us</a></li>
+                <li><a href="{{ url_for('public.jobs') }}">Jobs</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Job Seekers</h4>
+            <ul class="footer-links">
+                <li><a href="{{ url_for('public.jobs') }}">Browse Jobs</a></li>
+                <li><a href="{{ url_for('public.jobs') }}">Search Jobs</a></li>
+                {% if current_user.is_authenticated and current_user.is_jobseeker %}
+                    <li><a href="{{ url_for('seeker.applications') }}">My Applications</a></li>
+                    <li><a href="{{ url_for('seeker.profile') }}">My Profile</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.register') }}">My Applications</a></li>
+                    <li><a href="{{ url_for('auth.register') }}">My Profile</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Employers</h4>
+            <ul class="footer-links">
+                {% if current_user.is_authenticated and current_user.is_employer %}
+                    <li><a href="{{ url_for('employer.jobs') }}">Post a Job</a></li>
+                    <li><a href="{{ url_for('employer.jobs') }}">Manage Jobs</a></li>
+                    <li><a href="{{ url_for('employer.applications') }}">Applications</a></li>
+                    <li><a href="{{ url_for('employer.company_profile') }}">Company Profile</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.register') }}">Post a Job</a></li>
+                    <li><a href="{{ url_for('auth.register') }}">Manage Jobs</a></li>
+                    <li><a href="{{ url_for('auth.register') }}">Applications</a></li>
+                    <li><a href="{{ url_for('auth.register') }}">Company Profile</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Contact</h4>
+            <ul class="footer-contact">
+                <li><i class="fa-solid fa-phone"></i> <a href="{{ site.SITE_PHONE_HREF }}">{{ site.SITE_PHONE_DISPLAY }}</a></li>
+                <li><i class="fa-brands fa-whatsapp"></i> <a href="{{ site.SITE_WHATSAPP_HREF }}">{{ site.SITE_WHATSAPP_NUMBER }}</a></li>
+                <li><i class="fa-solid fa-location-dot"></i> {{ site.SITE_ADDRESS }}</li>
+                <li><i class="fa-solid fa-envelope"></i> <a href="mailto:{{ site.SITE_EMAIL }}">{{ site.SITE_EMAIL }}</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="container">
+            <p>&copy; {{ current_year }} {{ site.SITE_NAME }}. All rights reserved. &nbsp;|&nbsp; {{ site.SITE_CITY }}, {{ site.SITE_COUNTRY }}</p>
+        </div>
+    </div>
+</footer>
